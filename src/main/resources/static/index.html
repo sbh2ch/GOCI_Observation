@@ -5,25 +5,23 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>지도</title>
-    <script src="jquery-1.9.1.js"></script>
-    <script type="text/javascript" src="examples-base.js"></script>
-    <script type="text/javascript" src="highlight.min.js"></script>
+    <script src="assets/js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="assets/js/examples-base.js"></script>
+    <script type="text/javascript" src="assets/js/highlight.min.js"></script>
     <script type="text/javascript"
             src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=RyaikNMKgfrzfrriny1D&amp;submodules=drawing"></script>
     <link rel="stylesheet" type="text/css" href="css/examples-base.css"/>
 </head>
 <body>
 <div class="section" id="wrap">
-    <h2>testing Map API</h2>
-    <div id="map" style="width: 80%; height: 600px"></div>
+    <h2>CHL Map</h2>
+    <div id="map" style="width: 100%; height: 600px"></div>
+    <button id="add">+</button>
+    <button id="min">-</button>
+    <p id="date"></p>
 </div>
 
 <script>
-    var year = '2017';
-    var month = '07';
-    var day = '09';
-    var time = '00';
-
     if (!String.prototype.endsWith) {
         String.prototype.endsWith = function (searchString, position) {
             var subjectString = this.toString();
@@ -35,6 +33,20 @@
             return lastIndex !== -1 && lastIndex === position;
         };
     }
+
+    var state = {
+        year: 2017,
+        month: 7,
+        day: 9,
+        time: 0,
+        markerPosition: {
+            x: 62,
+            y: 66.875
+        },
+        centerCoord: new naver.maps.Point(60, 60),
+        zoom: 3,
+        type: 'CHL'
+    };
 
     var HOME_PATH = 'assets';
     var tileSize = new naver.maps.Size(200, 200),
@@ -64,7 +76,7 @@
                 },
                 mapTypeOptions = $.extend({}, commonOptions, {
                     name: type,
-                    tileSet: 'http://222.236.46.44/test/{year}/{month}/{day}/{time}/{type}/{z}/{x}-{y}.JPG'.replace('{type}', type.toLowerCase()).replace('{year}', year).replace('{month}', month).replace('{day}', day).replace('{time}', time),
+                    tileSet: 'http://222.236.46.44/test/{year}/{month}/{day}/{time}/{type}/{z}/{x}-{y}.JPG'.replace('{type}', type.toLowerCase()).replace('{year}', state.year).replace('{month}', state.month).replace('{day}', state.day).replace('{time}', state.time),
                     uid: ''
                 });
 
@@ -72,8 +84,8 @@
         };
 
     var map = new naver.maps.Map('map', {
-        center: new naver.maps.Point(60, 60),
-        zoom: 3,
+        center: state.centerCoord,
+        zoom: state.zoom,
         minZoom: 3,
         background: '#000000',
         logoControl: false,
@@ -83,7 +95,7 @@
             'TSS': getMapType('TSS'),
             'CHL': getMapType('CHL')
         }),
-        mapTypeId: 'CHL',
+        mapTypeId: state.type,
         mapTypeControl: true,
         mapTypeControlOptions: {
             position: naver.maps.Position.TOP_RIGHT,
@@ -131,7 +143,7 @@
             origin: new naver.maps.Point(0, 0),
             anchor: new naver.maps.Point(12, 34)
         },
-        position: new naver.maps.Point(62, 66.875),
+        position: new naver.maps.Point(state.markerPosition.x, state.markerPosition.y),
         map: map
     });
 
@@ -153,6 +165,78 @@
     //
     //    });
 
+    naver.maps.Event.addListener(map, 'dragend', function (e) {
+        console.dir(e);
+    });
+
+    var beforeChange = function (year, month, day, time) {
+        state.year = year;
+        state.month = month;
+        state.day = day;
+        state.time = time;
+        state.zoom = map.getZoom();
+        state.centerCoord = map.getCenter();
+        state.type = map.getMapTypeId();
+    };
+
+    $(document).ready(function () {
+        $("#date").html(state.day);
+        $("#add").click(function () {
+            beforeChange(state.year, state.month, state.day, state.time);
+            state.day = state.day + 1;
+            $("#date").html(state.day);
+
+            map = new naver.maps.Map('map', {
+                center: state.centerCoord,
+                zoom: state.zoom,
+                minZoom: 3,
+                background: '#000000',
+                logoControl: false,
+                mapTypes: new naver.maps.MapTypeRegistry({
+                    'RGB': getMapType('RGB'),
+                    'CDOM': getMapType('CDOM'),
+                    'TSS': getMapType('TSS'),
+                    'CHL': getMapType('CHL')
+                }),
+                mapTypeId: state.type,
+                mapTypeControl: true,
+                mapTypeControlOptions: {
+                    position: naver.maps.Position.TOP_RIGHT,
+                    style: naver.maps.MapTypeControlStyle.DROPDOWN
+                },
+                disableDoubleClickZoom: true,
+                disableDoubleTapZoom: true
+            });
+
+        });
+        $("#min").click(function () {
+            beforeChange(state.year, state.month, state.day, state.time);
+            state.day = state.day - 1;
+            $("#date").html(state.day);
+
+            map = new naver.maps.Map('map', {
+                center: state.centerCoord,
+                zoom: state.zoom,
+                minZoom: 3,
+                background: '#000000',
+                logoControl: false,
+                mapTypes: new naver.maps.MapTypeRegistry({
+                    'RGB': getMapType('RGB'),
+                    'CDOM': getMapType('CDOM'),
+                    'TSS': getMapType('TSS'),
+                    'CHL': getMapType('CHL')
+                }),
+                mapTypeId: state.type,
+                mapTypeControl: true,
+                mapTypeControlOptions: {
+                    position: naver.maps.Position.TOP_RIGHT,
+                    style: naver.maps.MapTypeControlStyle.DROPDOWN
+                },
+                disableDoubleClickZoom: true,
+                disableDoubleTapZoom: true
+            });
+        });
+    });
 </script>
 </body>
 </html>
