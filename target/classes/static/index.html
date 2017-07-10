@@ -78,12 +78,17 @@
         background: '#000000',
         logoControl: false,
         mapTypes: new naver.maps.MapTypeRegistry({
-            'CDM': getMapType('cdm'),
-            'TSS': getMapType('tss'),
-            'RGB': getMapType('rgb'),
-            'CHL': getMapType('chl')
+            'RGB': getMapType('RGB'),
+            'CDOM': getMapType('CDOM'),
+            'TSS': getMapType('TSS'),
+            'CHL': getMapType('CHL')
         }),
         mapTypeId: 'CHL',
+        mapTypeControl: true,
+        mapTypeControlOptions: {
+            position: naver.maps.Position.TOP_RIGHT,
+            style: naver.maps.MapTypeControlStyle.DROPDOWN
+        },
         disableDoubleClickZoom: true,
         disableDoubleTapZoom: true
     });
