@@ -19,6 +19,11 @@
 </div>
 
 <script>
+    var year = '2017';
+    var month = '07';
+    var day = '09';
+    var time = '00';
+
     if (!String.prototype.endsWith) {
         String.prototype.endsWith = function (searchString, position) {
             var subjectString = this.toString();
@@ -59,7 +64,7 @@
                 },
                 mapTypeOptions = $.extend({}, commonOptions, {
                     name: type,
-                    tileSet: 'http://222.236.46.44/test/2017/07/09/{type}/{z}/{x}-{y}.JPG'.replace('{type}', type.toLowerCase()),
+                    tileSet: 'http://222.236.46.44/test/{year}/{month}/{day}/{time}/{type}/{z}/{x}-{y}.JPG'.replace('{type}', type.toLowerCase()).replace('{year}', year).replace('{month}', month).replace('{day}', day).replace('{time}', time),
                     uid: ''
                 });
 
