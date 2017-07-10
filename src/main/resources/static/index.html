@@ -16,9 +16,22 @@
 <div class="section" id="wrap">
     <h2>CHL Map</h2>
     <div id="map" style="width: 100%; height: 600px"></div>
+    year
+    <button id="yearAdd">+</button>
+    <button id="yearMin">-</button>
+    month
+    <button id="monthAdd">+</button>
+    <button id="monthMin">-</button>
+    day
     <button id="add">+</button>
     <button id="min">-</button>
+    time
+    <button id="timeAdd">+</button>
+    <button id="timeMin">-</button>
+    <p id="year"></p>
+    <p id="month"></p>
     <p id="date"></p>
+    <p id="time"></p>
 </div>
 
 <script>
@@ -177,11 +190,74 @@
         };
 
 
-        $("#date").html(state.day);
+        $("#year").html(state.year + "년");
+        $("#month").html(state.month + "월");
+        $("#date").html(state.day + "일");
+        $("#time").html(state.time + "시");
+
+        $("#yearAdd").click(function () {
+            setState(state.year, state.month, state.day, state.time);
+            state.year = state.year + 1;
+            $("#year").html(state.year + "년");
+            map.setOptions('center', state.centerCoord);
+            map.setOptions('zoom', state.zoom);
+            map.setOptions('mapTypeId', state.type);
+            map.setOptions('mapTypes', new naver.maps.MapTypeRegistry({
+                'RGB': getMapType('RGB'),
+                'CDOM': getMapType('CDOM'),
+                'TSS': getMapType('TSS'),
+                'CHL': getMapType('CHL')
+            }));
+        });
+        $("#yearMin").click(function () {
+            setState(state.year, state.month, state.day, state.time);
+            state.year = state.year - 1;
+            $("#year").html(state.year + "년");
+            map.setOptions('center', state.centerCoord);
+            map.setOptions('zoom', state.zoom);
+            map.setOptions('mapTypeId', state.type);
+            map.setOptions('mapTypes', new naver.maps.MapTypeRegistry({
+                'RGB': getMapType('RGB'),
+                'CDOM': getMapType('CDOM'),
+                'TSS': getMapType('TSS'),
+                'CHL': getMapType('CHL')
+            }));
+        });
+
+        $("#monthAdd").click(function () {
+            setState(state.year, state.month, state.day, state.time);
+            state.month = state.month + 1;
+            $("#month").html(state.month + "월");
+            map.setOptions('center', state.centerCoord);
+            map.setOptions('zoom', state.zoom);
+            map.setOptions('mapTypeId', state.type);
+            map.setOptions('mapTypes', new naver.maps.MapTypeRegistry({
+                'RGB': getMapType('RGB'),
+                'CDOM': getMapType('CDOM'),
+                'TSS': getMapType('TSS'),
+                'CHL': getMapType('CHL')
+            }));
+        });
+        $("#monthMin").click(function () {
+            setState(state.year, state.month, state.day, state.time);
+            state.month = state.month - 1;
+            $("#month").html(state.month + "월");
+            map.setOptions('center', state.centerCoord);
+            map.setOptions('zoom', state.zoom);
+            map.setOptions('mapTypeId', state.type);
+            map.setOptions('mapTypes', new naver.maps.MapTypeRegistry({
+                'RGB': getMapType('RGB'),
+                'CDOM': getMapType('CDOM'),
+                'TSS': getMapType('TSS'),
+                'CHL': getMapType('CHL')
+            }));
+        });
+
+
         $("#add").click(function () {
             setState(state.year, state.month, state.day, state.time);
             state.day = state.day + 1;
-            $("#date").html(state.day);
+            $("#date").html(state.day + "일");
             map.setOptions('center', state.centerCoord);
             map.setOptions('zoom', state.zoom);
             map.setOptions('mapTypeId', state.type);
@@ -196,7 +272,36 @@
         $("#min").click(function () {
             setState(state.year, state.month, state.day, state.time);
             state.day = state.day - 1;
-            $("#date").html(state.day);
+            $("#date").html(state.day + "일");
+            map.setOptions('center', state.centerCoord);
+            map.setOptions('zoom', state.zoom);
+            map.setOptions('mapTypeId', state.type);
+            map.setOptions('mapTypes', new naver.maps.MapTypeRegistry({
+                'RGB': getMapType('RGB'),
+                'CDOM': getMapType('CDOM'),
+                'TSS': getMapType('TSS'),
+                'CHL': getMapType('CHL')
+            }));
+        });
+
+        $("#timeAdd").click(function () {
+            setState(state.year, state.month, state.day, state.time);
+            state.time = state.time + 1;
+            $("#time").html(state.time + "시");
+            map.setOptions('center', state.centerCoord);
+            map.setOptions('zoom', state.zoom);
+            map.setOptions('mapTypeId', state.type);
+            map.setOptions('mapTypes', new naver.maps.MapTypeRegistry({
+                'RGB': getMapType('RGB'),
+                'CDOM': getMapType('CDOM'),
+                'TSS': getMapType('TSS'),
+                'CHL': getMapType('CHL')
+            }));
+        });
+        $("#timeMin").click(function () {
+            setState(state.year, state.month, state.day, state.time);
+            state.time = state.time - 1;
+            $("#time").html(state.time + "시");
             map.setOptions('center', state.centerCoord);
             map.setOptions('zoom', state.zoom);
             map.setOptions('mapTypeId', state.type);
