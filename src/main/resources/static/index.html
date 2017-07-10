@@ -48,7 +48,6 @@
         type: 'CHL'
     };
 
-    var HOME_PATH = 'assets';
     var tileSize = new naver.maps.Size(200, 200),
         proj = {
             fromCoordToPoint: function (coord) {
@@ -82,6 +81,7 @@
 
             return new naver.maps.ImageMapType(mapTypeOptions);
         };
+
 
     var map = new naver.maps.Map('map', {
         center: state.centerCoord,
@@ -165,27 +165,26 @@
     //
     //    });
 
-    naver.maps.Event.addListener(map, 'dragend', function (e) {
-        console.dir(e);
-    });
-
-    var beforeChange = function (year, month, day, time) {
-        state.year = year;
-        state.month = month;
-        state.day = day;
-        state.time = time;
-        state.zoom = map.getZoom();
-        state.centerCoord = map.getCenter();
-        state.type = map.getMapTypeId();
-    };
-
     $(document).ready(function () {
+
+
+        var beforeChange = function (year, month, day, time) {
+            state.year = year;
+            state.month = month;
+            state.day = day;
+            state.time = time;
+            state.zoom = map.getZoom();
+            state.centerCoord = map.getCenter();
+            state.type = map.getMapTypeId();
+            console.dir(state);
+        };
+
+
         $("#date").html(state.day);
         $("#add").click(function () {
             beforeChange(state.year, state.month, state.day, state.time);
             state.day = state.day + 1;
             $("#date").html(state.day);
-
             map = new naver.maps.Map('map', {
                 center: state.centerCoord,
                 zoom: state.zoom,
@@ -207,13 +206,12 @@
                 disableDoubleClickZoom: true,
                 disableDoubleTapZoom: true
             });
-
         });
+
         $("#min").click(function () {
             beforeChange(state.year, state.month, state.day, state.time);
             state.day = state.day - 1;
             $("#date").html(state.day);
-
             map = new naver.maps.Map('map', {
                 center: state.centerCoord,
                 zoom: state.zoom,
