@@ -9,20 +9,140 @@
     <script type="text/javascript" src="examples-base.js"></script>
     <script type="text/javascript" src="highlight.min.js"></script>
     <script type="text/javascript"
-            src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=RyaikNMKgfrzfrriny1D&amp;submodules=panorama"></script>
+            src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=RyaikNMKgfrzfrriny1D&amp;submodules=drawing"></script>
     <link rel="stylesheet" type="text/css" href="css/examples-base.css"/>
 </head>
 <body>
 <div class="section" id="wrap">
     <h2>testing Map API</h2>
     <div id="map" style="width: 80%; height: 600px"></div>
-    <script>
-        var HOME_PATH = window.HOME_PATH || '.';
-        var mapTypeOption = function (opts) {
-            var options = $.extend(this, opts || {});
-            this.tileSet = "";
-        }
-    </script>
 </div>
+
+<script>
+    if (!String.prototype.endsWith) {
+        String.prototype.endsWith = function (searchString, position) {
+            var subjectString = this.toString();
+            if (typeof position !== 'number' || !isFinite(position) || Math.floor(position) !== position || position > subjectString.length) {
+                position = subjectString.length;
+            }
+            position -= searchString.length;
+            var lastIndex = subjectString.indexOf(searchString, position);
+            return lastIndex !== -1 && lastIndex === position;
+        };
+    }
+
+    var HOME_PATH = 'assets';
+    var tileSize = new naver.maps.Size(200, 200),
+        proj = {
+            fromCoordToPoint: function (coord) {
+                var pcoord = coord.clone();
+                if (coord instanceof naver.maps.LatLng) {
+                    pcoord = new naver.maps.Point(coord.lng(), coord.lat());
+                }
+                return pcoord.div(tileSize.width, tileSize.height);
+            },
+            fromPointToCoord: function (point) {
+                return point.clone().mul(tileSize.width, tileSize.height);
+            }
+        },
+        getMapType = function (type) {
+            var commonOptions = {
+                    name: '',
+                    minZoom: 0,
+                    maxZoom: 6,
+                    tileSize: tileSize,
+                    projection: proj,
+                    repeatX: false,
+                    tileSet: '',
+                    vendor: 'KOSC',
+                    uid: ''
+                },
+                mapTypeOptions = $.extend({}, commonOptions, {
+                    name: type,
+                    tileSet: 'http://222.236.46.44/test/2017/07/09/{type}/{z}/{x}-{y}.JPG'.replace('{type}', type.toLowerCase()),
+                    uid: ''
+                });
+
+            return new naver.maps.ImageMapType(mapTypeOptions);
+        };
+
+    var map = new naver.maps.Map('map', {
+        center: new naver.maps.Point(60, 60),
+        zoom: 3,
+        minZoom: 3,
+        background: '#000000',
+        logoControl: false,
+        mapTypes: new naver.maps.MapTypeRegistry({
+            'CDM': getMapType('cdm'),
+            'TSS': getMapType('tss'),
+            'RGB': getMapType('rgb'),
+            'CHL': getMapType('chl')
+        }),
+        mapTypeId: 'CHL',
+        disableDoubleClickZoom: true,
+        disableDoubleTapZoom: true
+    });
+
+    var drawingManager = new naver.maps.drawing.DrawingManager({
+        map: map,
+        drawingControl: [naver.maps.drawing.DrawingMode.RECTANGLE],
+        drawingControlOptions: {
+            position: naver.maps.Position.TOP_LEFT,
+            style: naver.maps.drawing.DrawingStyle.HORIZONTAL
+        },
+        controlPointOptions: {
+            anchorPointOptions: {
+                radius: 5,
+                fillColor: '#ff0000',
+                strokeColor: '#ff0000',
+                strokeWeight: 1
+            },
+            midPointOptions: {
+                radius: 4,
+                fillColor: '#ff0000',
+                strokeColor: '#ffffff',
+                strokeWeight: 2,
+                fillOpacity: 0.3
+            }
+        },
+        rectangleOptions: {
+            fillColor: '#ff0000',
+            fillOpacity: 0.3,
+            strokeWeight: 3,
+            strokeColor: '#ff0000'
+        }
+    });
+
+    var marker = new naver.maps.Marker({
+        icon: {
+            url: 'http://222.236.46.44/assets/img/marker.png',
+            size: new naver.maps.Size(25, 34),
+            scaleSize: new naver.maps.Size(25, 34),
+            origin: new naver.maps.Point(0, 0),
+            anchor: new naver.maps.Point(12, 34)
+        },
+        position: new naver.maps.Point(62, 66.875),
+        map: map
+    });
+
+    var $cropBtn = $("li[_dm='1']");
+    var cropToggle = false;
+
+    $cropBtn.click(function (e) {
+        cropToggle = !cropToggle;
+    });
+
+    //    naver.maps.Event.addListener(map, 'click', function (e) {
+    //        if (cropToggle)
+    //            return;
+    //
+    //        var nStart = new Date().getTime();
+    //        marker.setPosition(e.point);
+    //
+    //        var fName = e.originalEvent.target.src;
+    //
+    //    });
+
+</script>
 </body>
 </html>
