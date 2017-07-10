@@ -43,9 +43,9 @@
             x: 62,
             y: 66.875
         },
-        centerCoord: new naver.maps.Point(60, 60),
+        centerCoord: new naver.maps.Point(75, 60),
         zoom: 3,
-        type: 'CHL'
+        type: 'RGB'
     };
 
     var tileSize = new naver.maps.Size(200, 200),
@@ -166,9 +166,7 @@
     //    });
 
     $(document).ready(function () {
-
-
-        var beforeChange = function (year, month, day, time) {
+        var setState = function (year, month, day, time) {
             state.year = year;
             state.month = month;
             state.day = day;
@@ -176,63 +174,38 @@
             state.zoom = map.getZoom();
             state.centerCoord = map.getCenter();
             state.type = map.getMapTypeId();
-            console.dir(state);
         };
 
 
         $("#date").html(state.day);
         $("#add").click(function () {
-            beforeChange(state.year, state.month, state.day, state.time);
+            setState(state.year, state.month, state.day, state.time);
             state.day = state.day + 1;
             $("#date").html(state.day);
-            map = new naver.maps.Map('map', {
-                center: state.centerCoord,
-                zoom: state.zoom,
-                minZoom: 3,
-                background: '#000000',
-                logoControl: false,
-                mapTypes: new naver.maps.MapTypeRegistry({
-                    'RGB': getMapType('RGB'),
-                    'CDOM': getMapType('CDOM'),
-                    'TSS': getMapType('TSS'),
-                    'CHL': getMapType('CHL')
-                }),
-                mapTypeId: state.type,
-                mapTypeControl: true,
-                mapTypeControlOptions: {
-                    position: naver.maps.Position.TOP_RIGHT,
-                    style: naver.maps.MapTypeControlStyle.DROPDOWN
-                },
-                disableDoubleClickZoom: true,
-                disableDoubleTapZoom: true
-            });
+            map.setOptions('center', state.centerCoord);
+            map.setOptions('zoom', state.zoom);
+            map.setOptions('mapTypeId', state.type);
+            map.setOptions('mapTypes', new naver.maps.MapTypeRegistry({
+                'RGB': getMapType('RGB'),
+                'CDOM': getMapType('CDOM'),
+                'TSS': getMapType('TSS'),
+                'CHL': getMapType('CHL')
+            }));
         });
 
         $("#min").click(function () {
-            beforeChange(state.year, state.month, state.day, state.time);
+            setState(state.year, state.month, state.day, state.time);
             state.day = state.day - 1;
             $("#date").html(state.day);
-            map = new naver.maps.Map('map', {
-                center: state.centerCoord,
-                zoom: state.zoom,
-                minZoom: 3,
-                background: '#000000',
-                logoControl: false,
-                mapTypes: new naver.maps.MapTypeRegistry({
-                    'RGB': getMapType('RGB'),
-                    'CDOM': getMapType('CDOM'),
-                    'TSS': getMapType('TSS'),
-                    'CHL': getMapType('CHL')
-                }),
-                mapTypeId: state.type,
-                mapTypeControl: true,
-                mapTypeControlOptions: {
-                    position: naver.maps.Position.TOP_RIGHT,
-                    style: naver.maps.MapTypeControlStyle.DROPDOWN
-                },
-                disableDoubleClickZoom: true,
-                disableDoubleTapZoom: true
-            });
+            map.setOptions('center', state.centerCoord);
+            map.setOptions('zoom', state.zoom);
+            map.setOptions('mapTypeId', state.type);
+            map.setOptions('mapTypes', new naver.maps.MapTypeRegistry({
+                'RGB': getMapType('RGB'),
+                'CDOM': getMapType('CDOM'),
+                'TSS': getMapType('TSS'),
+                'CHL': getMapType('CHL')
+            }));
         });
     });
 </script>
