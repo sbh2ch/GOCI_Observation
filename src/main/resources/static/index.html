@@ -32,6 +32,7 @@
     <p id="month"></p>
     <p id="date"></p>
     <p id="time"></p>
+    <p id="result"></p>
 </div>
 
 <script>
@@ -62,28 +63,39 @@
         latArr: [new Array(6), new Array(12), new Array(25), new Array(50)],
         lonArr: [new Array(6), new Array(12), new Array(25), new Array(50)]
     };
+    for (var i = 0; i < 6; i++) {
+        state.valueArr[0][i] = new Array(6);
+        state.latArr[0][i] = new Array(6);
+        state.lonArr[0][i] = new Array(6);
+    }
+    for (var i = 0; i < 12; i++) {
+        state.valueArr[1][i] = new Array(12);
+        state.latArr[1][i] = new Array(12);
+        state.lonArr[1][i] = new Array(12);
+    }
+    for (var i = 0; i < 25; i++) {
+        state.valueArr[2][i] = new Array(25);
+        state.latArr[2][i] = new Array(25);
+        state.lonArr[2][i] = new Array(25);
+    }
+    for (var i = 0; i < 50; i++) {
+        state.valueArr[3][i] = new Array(50);
+        state.latArr[3][i] = new Array(50);
+        state.lonArr[3][i] = new Array(50);
+    }
 
     var cleanArr = function () {
-        console.log('clean');
         for (var i = 0; i < 6; i++) {
             state.valueArr[0][i] = new Array(6);
-            state.latArr[0][i] = new Array(6);
-            state.lonArr[0][i] = new Array(6);
         }
         for (var i = 0; i < 12; i++) {
             state.valueArr[1][i] = new Array(12);
-            state.latArr[1][i] = new Array(12);
-            state.lonArr[1][i] = new Array(12);
         }
         for (var i = 0; i < 25; i++) {
             state.valueArr[2][i] = new Array(25);
-            state.latArr[2][i] = new Array(25);
-            state.lonArr[2][i] = new Array(25);
         }
         for (var i = 0; i < 50; i++) {
             state.valueArr[3][i] = new Array(50);
-            state.latArr[3][i] = new Array(50);
-            state.lonArr[3][i] = new Array(50);
         }
     };
 
@@ -200,6 +212,77 @@
         if (cropToggle)
             return;
 
+        var fName = e.originalEvent.target.src;
+        if (fName.endsWith(".gif")) {
+            return;
+        }
+
+        fName = fName.split("/");
+        fName = fName[fName.length - 1].split(".")[0].split("-");
+        var zoom = map.getZoom();
+        var arrX = fName[0];
+        var arrY = fName[1];
+
+        var scope;
+        switch (zoom) {
+            case 3:
+                scope = 800;
+                if (arrX >= 6 || arrY >= 6)
+                    return;
+                break;
+            case 4:
+                scope = 400;
+                if (arrX >= 12 || arrY >= 12)
+                    return;
+                break;
+            case 5:
+                scope = 200;
+                if (arrX >= 25 || arrY >= 25)
+                    return;
+                break;
+            case 6:
+                scope = 100;
+                if (arrX >= 50 || arrY >= 50)
+                    return;
+                break;
+        }
+        var posX = parseInt(((e.coord.x * 32) % scope) / (scope / 100));
+        var posY = parseInt(((e.coord.y * 32) % scope) / (scope / 100));
+
+        console.log(posY, posX);
+
+        var resultTxt = "";
+
+        if (state.valueArr[zoom - 3][arrX][arrY] === undefined) {
+            if (state.latArr[zoom - 3][arrX][arrY] === undefined) {
+                $.ajax({
+                    url: '/api/lonlat/' + arrX + '-' + arrY + '/' + zoom,
+                    method: 'GET',
+                    async: false,
+                    dataType: 'JSON',
+                    success: function (lonlat) {
+                        state.lonArr[zoom - 3][arrX][arrY] = lonlat[0];
+                        state.latArr[zoom - 3][arrX][arrY] = lonlat[1];
+                    }
+                });
+            }
+
+            $.ajax({
+                //todo 날짜 처리
+                url: '/api/' + state.year + '-' + state.month + '-' + state.day + '-' + state.time + '/' + arrX + '-' + arrY + '/' + zoom + '/' + state.type,
+                method: 'GET',
+                dataType: 'JSON',
+                success: function (data) {
+                    state.valueArr[zoom - 3][arrX][arrY] = data;
+                    $("#result").html('value : ' + state.valueArr[zoom - 3][arrX][arrY][posX][posY] + '<br/>lon : ' + state.lonArr[zoom - 3][arrX][arrY][posX][posY] + '<br/>lat : ' + state.latArr[zoom - 3][arrX][arrY][posX][posY]);
+                },
+                error: function () {
+                    alert('data load error occurred');
+                }
+            });
+        } else {
+            $("#result").html('value : ' + state.valueArr[zoom - 3][arrX][arrY][posX][posY] + '<br/>lon : ' + state.lonArr[zoom - 3][arrX][arrY][posX][posY] + '<br/>lat : ' + state.latArr[zoom - 3][arrX][arrY][posX][posY]);
+        }
     });
 
     $(document).ready(function () {
@@ -213,7 +296,6 @@
             state.type = map.getMapTypeId();
         };
 
-
         $("#year").html(state.year + "년");
         $("#month").html(state.month + "월");
         $("#date").html(state.day + "일");
@@ -226,9 +308,6 @@
             setState(state.year, state.month, state.day, state.time);
             state.year = state.year + 1;
             $("#year").html(state.year + "년");
-            map.setOptions('center', state.centerCoord);
-            map.setOptions('zoom', state.zoom);
-            map.setOptions('mapTypeId', state.type);
             map.setOptions('mapTypes', new naver.maps.MapTypeRegistry({
                 'RGB': getMapType('RGB'),
                 'CDOM': getMapType('CDOM'),
@@ -236,14 +315,12 @@
                 'CHL': getMapType('CHL')
             }));
         });
+
         $("#yearMin").click(function () {
             cleanArr();
             setState(state.year, state.month, state.day, state.time);
             state.year = state.year - 1;
             $("#year").html(state.year + "년");
-            map.setOptions('center', state.centerCoord);
-            map.setOptions('zoom', state.zoom);
-            map.setOptions('mapTypeId', state.type);
             map.setOptions('mapTypes', new naver.maps.MapTypeRegistry({
                 'RGB': getMapType('RGB'),
                 'CDOM': getMapType('CDOM'),
@@ -257,9 +334,6 @@
             setState(state.year, state.month, state.day, state.time);
             state.month = state.month + 1;
             $("#month").html(state.month + "월");
-            map.setOptions('center', state.centerCoord);
-            map.setOptions('zoom', state.zoom);
-            map.setOptions('mapTypeId', state.type);
             map.setOptions('mapTypes', new naver.maps.MapTypeRegistry({
                 'RGB': getMapType('RGB'),
                 'CDOM': getMapType('CDOM'),
@@ -272,9 +346,6 @@
             setState(state.year, state.month, state.day, state.time);
             state.month = state.month - 1;
             $("#month").html(state.month + "월");
-            map.setOptions('center', state.centerCoord);
-            map.setOptions('zoom', state.zoom);
-            map.setOptions('mapTypeId', state.type);
             map.setOptions('mapTypes', new naver.maps.MapTypeRegistry({
                 'RGB': getMapType('RGB'),
                 'CDOM': getMapType('CDOM'),
@@ -289,9 +360,6 @@
             setState(state.year, state.month, state.day, state.time);
             state.day = state.day + 1;
             $("#date").html(state.day + "일");
-            map.setOptions('center', state.centerCoord);
-            map.setOptions('zoom', state.zoom);
-            map.setOptions('mapTypeId', state.type);
             map.setOptions('mapTypes', new naver.maps.MapTypeRegistry({
                 'RGB': getMapType('RGB'),
                 'CDOM': getMapType('CDOM'),
@@ -305,9 +373,6 @@
             setState(state.year, state.month, state.day, state.time);
             state.day = state.day - 1;
             $("#date").html(state.day + "일");
-            map.setOptions('center', state.centerCoord);
-            map.setOptions('zoom', state.zoom);
-            map.setOptions('mapTypeId', state.type);
             map.setOptions('mapTypes', new naver.maps.MapTypeRegistry({
                 'RGB': getMapType('RGB'),
                 'CDOM': getMapType('CDOM'),
@@ -321,9 +386,6 @@
             setState(state.year, state.month, state.day, state.time);
             state.time = state.time + 1;
             $("#time").html(state.time + "시");
-            map.setOptions('center', state.centerCoord);
-            map.setOptions('zoom', state.zoom);
-            map.setOptions('mapTypeId', state.type);
             map.setOptions('mapTypes', new naver.maps.MapTypeRegistry({
                 'RGB': getMapType('RGB'),
                 'CDOM': getMapType('CDOM'),
@@ -337,9 +399,6 @@
             setState(state.year, state.month, state.day, state.time);
             state.time = state.time - 1;
             $("#time").html(state.time + "시");
-            map.setOptions('center', state.centerCoord);
-            map.setOptions('zoom', state.zoom);
-            map.setOptions('mapTypeId', state.type);
             map.setOptions('mapTypes', new naver.maps.MapTypeRegistry({
                 'RGB': getMapType('RGB'),
                 'CDOM': getMapType('CDOM'),
