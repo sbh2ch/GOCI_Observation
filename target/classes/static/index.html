@@ -46,7 +46,6 @@
             return lastIndex !== -1 && lastIndex === position;
         };
     }
-
     var state = {
         year: 2017,
         month: 7,
@@ -58,8 +57,37 @@
         },
         centerCoord: new naver.maps.Point(75, 60),
         zoom: 3,
-        type: 'RGB'
+        type: 'RGB',
+        valueArr: [new Array(6), new Array(12), new Array(25), new Array(50)],
+        latArr: [new Array(6), new Array(12), new Array(25), new Array(50)],
+        lonArr: [new Array(6), new Array(12), new Array(25), new Array(50)]
     };
+
+    var cleanArr = function () {
+        console.log('clean');
+        for (var i = 0; i < 6; i++) {
+            state.valueArr[0][i] = new Array(6);
+            state.latArr[0][i] = new Array(6);
+            state.lonArr[0][i] = new Array(6);
+        }
+        for (var i = 0; i < 12; i++) {
+            state.valueArr[1][i] = new Array(12);
+            state.latArr[1][i] = new Array(12);
+            state.lonArr[1][i] = new Array(12);
+        }
+        for (var i = 0; i < 25; i++) {
+            state.valueArr[2][i] = new Array(25);
+            state.latArr[2][i] = new Array(25);
+            state.lonArr[2][i] = new Array(25);
+        }
+        for (var i = 0; i < 50; i++) {
+            state.valueArr[3][i] = new Array(50);
+            state.latArr[3][i] = new Array(50);
+            state.lonArr[3][i] = new Array(50);
+        }
+    };
+
+    cleanArr();
 
     var tileSize = new naver.maps.Size(200, 200),
         proj = {
@@ -150,7 +178,7 @@
 
     var marker = new naver.maps.Marker({
         icon: {
-            url: 'http://222.236.46.44/assets/img/marker.png',
+            url: 'assets/img/marker.png',
             size: new naver.maps.Size(25, 34),
             scaleSize: new naver.maps.Size(25, 34),
             origin: new naver.maps.Point(0, 0),
@@ -164,19 +192,15 @@
     var cropToggle = false;
 
     $cropBtn.click(function (e) {
+        console.log('crop!');
         cropToggle = !cropToggle;
     });
 
-    //    naver.maps.Event.addListener(map, 'click', function (e) {
-    //        if (cropToggle)
-    //            return;
-    //
-    //        var nStart = new Date().getTime();
-    //        marker.setPosition(e.point);
-    //
-    //        var fName = e.originalEvent.target.src;
-    //
-    //    });
+    naver.maps.Event.addListener(map, 'click', function (e) {
+        if (cropToggle)
+            return;
+
+    });
 
     $(document).ready(function () {
         var setState = function (year, month, day, time) {
@@ -195,7 +219,10 @@
         $("#date").html(state.day + "일");
         $("#time").html(state.time + "시");
 
+
+        //todo 노가다 코드 없에기
         $("#yearAdd").click(function () {
+            cleanArr();
             setState(state.year, state.month, state.day, state.time);
             state.year = state.year + 1;
             $("#year").html(state.year + "년");
@@ -210,6 +237,7 @@
             }));
         });
         $("#yearMin").click(function () {
+            cleanArr();
             setState(state.year, state.month, state.day, state.time);
             state.year = state.year - 1;
             $("#year").html(state.year + "년");
@@ -225,6 +253,7 @@
         });
 
         $("#monthAdd").click(function () {
+            cleanArr();
             setState(state.year, state.month, state.day, state.time);
             state.month = state.month + 1;
             $("#month").html(state.month + "월");
@@ -239,6 +268,7 @@
             }));
         });
         $("#monthMin").click(function () {
+            cleanArr();
             setState(state.year, state.month, state.day, state.time);
             state.month = state.month - 1;
             $("#month").html(state.month + "월");
@@ -255,6 +285,7 @@
 
 
         $("#add").click(function () {
+            cleanArr();
             setState(state.year, state.month, state.day, state.time);
             state.day = state.day + 1;
             $("#date").html(state.day + "일");
@@ -270,6 +301,7 @@
         });
 
         $("#min").click(function () {
+            cleanArr();
             setState(state.year, state.month, state.day, state.time);
             state.day = state.day - 1;
             $("#date").html(state.day + "일");
@@ -285,6 +317,7 @@
         });
 
         $("#timeAdd").click(function () {
+            cleanArr();
             setState(state.year, state.month, state.day, state.time);
             state.time = state.time + 1;
             $("#time").html(state.time + "시");
@@ -298,7 +331,9 @@
                 'CHL': getMapType('CHL')
             }));
         });
+
         $("#timeMin").click(function () {
+            cleanArr();
             setState(state.year, state.month, state.day, state.time);
             state.time = state.time - 1;
             $("#time").html(state.time + "시");
