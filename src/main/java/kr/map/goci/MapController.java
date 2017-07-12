@@ -23,7 +23,8 @@ public class MapController {
 
     @GetMapping("/api/{date}/{pos}/{zoom}/{type}")
     public ResponseEntity getValue(@PathVariable String date, @PathVariable String pos, @PathVariable String zoom, @PathVariable String type) throws Exception {
-        Scanner scan = new Scanner(new File("C:/mat/output/" + zoom + "/" + pos + ".db"));
+        String[] dateInfo = date.split("-");
+        Scanner scan = new Scanner(new File("C:/mat/output/" + dateInfo[0] + "/" + dateInfo[1] + "/" + dateInfo[2] + "/" + dateInfo[3] + "/" + type + "/" + zoom + "/" + pos + ".db"));
         String txt = "";
 
         int x = 0;
