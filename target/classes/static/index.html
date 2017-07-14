@@ -56,7 +56,7 @@
         latArr: [new Array(6), new Array(12), new Array(25), new Array(50)],
         lonArr: [new Array(6), new Array(12), new Array(25), new Array(50)]
     };
-    var a = Array.apply(null, new Array(5)).map(Number.prototype.valueOf, 0);
+    var a = Array.apply(null, new Array(6)).map(Array.prototype.valueOf, new Array(6));
 
     for (var i = 0; i < 6; i++) {
         state.valueArr[0][i] = new Array(6);
@@ -295,7 +295,6 @@
         $("#date").html(state.day + "일");
         $("#time").html(state.time + "시");
 
-
         //todo 노가다 코드 없에기
         $("#yearAdd").click(function () {
             cleanArr();
@@ -335,6 +334,7 @@
                 'CHL': getMapType('CHL')
             }));
         });
+
         $("#monthMin").click(function () {
             cleanArr();
             setState(state.year, state.month, state.day, state.time);
@@ -347,7 +347,6 @@
                 'CHL': getMapType('CHL')
             }));
         });
-
 
         $("#add").click(function () {
             cleanArr();
@@ -399,6 +398,41 @@
                 'TSS': getMapType('TSS'),
                 'CHL': getMapType('CHL')
             }));
+        });
+
+        var GROUPED_EVENT = [naver.maps.drawing.DrawingEvents.ADD];
+
+        $(GROUPED_EVENT).each(function (i, eventName) {
+            drawingManager.addListener(eventName, function (overlay) {
+                var createRectangles = drawingManager.getDrawings();
+                var key = Object.keys(createRectangles);
+                if (confirm('save it?')) {
+                    var selectedSector = createRectangles[key[key.length - 1]].bounds;
+                    var data = {
+                        "startX": Math.round(selectedSector._min.x * 32) + "",
+                        "startY": Math.round(selectedSector._min.y * 32) + "",
+                        "endX": Math.round(selectedSector._max.x * 32) + "",
+                        "endY": Math.round(selectedSector._max.y * 32) + "",
+                        "date": state.year + "-" + state.month + "-" + state.day + "-" + state.time, //todo date 변수 처리
+                        "type": map.getMapTypeId() //todo type 변수 처릐
+                    };
+                    //다운로드 구현
+                    $.ajax({
+                        url: '/api/image',
+                        method: 'POST',
+                        dataType: 'json',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        data: JSON.stringify(data)
+                    });
+                } else {
+                    createRectangles[key].setMap(null);
+                }
+                setTimeout(function () {
+                    cropToggle = false;
+                }, 500);
+            });
         });
     });
 </script>

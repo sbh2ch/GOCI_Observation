@@ -5,11 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.Scanner;
 
 /**
@@ -67,5 +68,22 @@ public class MapController {
             }
         }
         return new ResponseEntity<>(objectMapper.writeValueAsString(arr), HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/api/image", produces = "application/json;charset=UTF-8")
+    public ResponseEntity makeCrop(@RequestBody He5 he5) throws Exception {
+        String[] dates = he5.getDate().split("-");
+        StringBuilder dateParams = new StringBuilder();
+        Arrays.stream(dates).forEach(date -> dateParams.append((date.length() == 1 ? "0" + date : date) + " "));
+
+        String name = new SimpleDateFormat("yyMMddHHmmssSS").format(new Date());
+        String params = dateParams + he5.getType() + " " + name + " " + he5.getStartX() + " " + he5.getEndX() + " " + he5.getStartY() + " " + he5.getEndY() + " C:\\";
+
+        Runtime.getRuntime().exec("C:\\mat\\crop\\distrib\\testing.exe " + params).waitFor();
+
+        log.info("created he5 : " + name + "_" + dates[0] + dates[1] + dates[2] + dates[3] + he5.getType() + ".he5");
+        log.info("param : " + params);
+
+        return new ResponseEntity<>(objectMapper.writeValueAsString(he5), HttpStatus.OK);
     }
 }
