@@ -106,8 +106,8 @@ public class MapController {
         String[] now = new SimpleDateFormat("yyyy-MM-dd-ssSSS").format(new Date()).split("-");
         String path = now[0] + "/" + now[1] + "/" + now[2];
         String name = now[3] + (Math.random() * 100) + ".JPG";
-        Links links = new Links("download Image", "http://localhost:8080/api/image/path/" + path.replaceAll("/", "-") + "/name/" + name);
-
+        Links imgLink = new Links("download Image", "http://localhost:8080/api/image/path/" + path.replaceAll("/", "-") + "/name/" + name);
+        Links downLink = new Links("download Satellite Data", "");
         File mkdir = new File("C:/OUT_IMAGE/" + path);
         if (!mkdir.exists()) {
             mkdir.mkdirs();
@@ -115,14 +115,14 @@ public class MapController {
 
         File outputFile = new File("C:/OUT_IMAGE/" + path + "/" + name);
         ImageIO.write(subImage, "jpg", outputFile);
-        Crop.Response res = new Crop.Response(path, name, links);
+        Crop.Response res = new Crop.Response(path, name, imgLink, new He5.Response(crop, downLink));
 
         return new ResponseEntity<>(objectMapper.writeValueAsString(res), HttpStatus.OK);
     }
 
 
     @PostMapping(value = "/api/image", produces = "application/json;charset=UTF-8")
-    public ResponseEntity makeCrop(@RequestBody He5 he5) throws Exception {
+    public ResponseEntity makeCrop(@RequestBody He5.Attributes he5) throws Exception {
         String[] dates = he5.getDate().split("-");
         StringBuilder dateParams = new StringBuilder();
         Arrays.stream(dates).forEach(date -> dateParams.append((date.length() == 1 ? "0" + date : date) + " "));

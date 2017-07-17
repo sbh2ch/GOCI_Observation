@@ -34,16 +34,9 @@ public class Crop {
     public static class Response {
         private String path;
         private String name;
-        private Links links;
+        private Links imgLink;
+        private He5.Response satelliteDownInfo;
 
-        @Override
-        public String toString() {
-            return "Response{" +
-                    "path='" + path + '\'' +
-                    ", name='" + name + '\'' +
-                    ", links=" + links +
-                    '}';
-        }
     }
 
     @Data
