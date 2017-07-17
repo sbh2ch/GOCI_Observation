@@ -16,23 +16,36 @@
 <div class="section" id="wrap">
     <h2>CHL Map</h2>
     <div id="map" style="width: 100%; height: 600px"></div>
-    year
-    <button id="yearAdd">+</button>
-    <button id="yearMin">-</button>
-    month
-    <button id="monthAdd">+</button>
-    <button id="monthMin">-</button>
-    day
-    <button id="add">+</button>
-    <button id="min">-</button>
-    time
-    <button id="timeAdd">+</button>
-    <button id="timeMin">-</button>
-    <p id="year"></p>
-    <p id="month"></p>
-    <p id="date"></p>
-    <p id="time"></p>
     <p id="result"></p>
+    <div>
+        output type
+        <div style="border: 1px solid black; width: 400px; height: 400px; background-color: black">
+
+        </div>
+        <p><input type="radio" name="gociOutput" value="he5" checked>he5</p>
+        <p><input type="radio" name="gociOutput" value="NetCDF">NetCDF</p>
+        <p><input type="checkbox">KML</p>
+        <button>make</button>
+    </div>
+    <br/>
+    <div>
+        year
+        <button id="yearAdd">+</button>
+        <button id="yearMin">-</button>
+        month
+        <button id="monthAdd">+</button>
+        <button id="monthMin">-</button>
+        day
+        <button id="add">+</button>
+        <button id="min">-</button>
+        time
+        <button id="timeAdd">+</button>
+        <button id="timeMin">-</button>
+        <p id="year"></p>
+        <p id="month"></p>
+        <p id="date"></p>
+        <p id="time"></p>
+    </div>
 </div>
 
 <script>
@@ -47,6 +60,7 @@
             return lastIndex !== -1 && lastIndex === position;
         };
     }
+
     var state = {
         year: 2017,
         month: 7,
@@ -414,9 +428,11 @@
                         "endX": Math.round(selectedSector._max.x * 32) + "",
                         "endY": Math.round(selectedSector._max.y * 32) + "",
                         "date": state.year + "-" + state.month + "-" + state.day + "-" + state.time, //todo date 변수 처리
-                        "type": map.getMapTypeId() //todo type 변수 처릐
+                        "type": map.getMapTypeId(), //todo type 변수 처릐
+                        "outputType": $("input[name='gociOutput']:checked").val()
                     };
-                    //다운로드 구현
+
+                    //todo 다운로드 구현
                     $.ajax({
                         url: '/api/image',
                         method: 'POST',

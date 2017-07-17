@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -70,6 +72,23 @@ public class MapController {
         return new ResponseEntity<>(objectMapper.writeValueAsString(arr), HttpStatus.OK);
     }
 
+    @PostMapping(value = "/api/crop", produces = "application/json;charset=UTF-8")
+    public ResponseEntity image(@RequestBody Crop crop) throws Exception {
+        String[] dates = crop.getDate().split("-");
+        for (int i = 1; i < dates.length; i++) {
+            if (dates[i].length() == 1)
+                dates[i] += "0" + dates[i];
+        }
+
+        BufferedImage originalImage = ImageIO.read(new File("C:\\ORI_IMAGE\\" + dates[0] + "\\" + dates[1] + "\\" + dates[2] + "\\" + "COMS_GOCI_L2A_GA_" + dates[0] + dates[1] + dates[2] + dates[3] + "*." + crop.getType() + ".JPG"));
+        BufferedImage subImage = originalImage.getSubimage(crop.getStartX(), crop.getStartY(), crop.getEndX() - crop.getStartX(), crop.getEndY() - crop.getStartY());
+        File outputFile = new File("C:\\output\\testing.JPG");
+        ImageIO.write(subImage, "jpg", outputFile);
+        log.info("ccrroopp");
+        return new ResponseEntity<>("C:\\output\\testing.JPG", HttpStatus.OK);
+    }
+
+
     @PostMapping(value = "/api/image", produces = "application/json;charset=UTF-8")
     public ResponseEntity makeCrop(@RequestBody He5 he5) throws Exception {
         String[] dates = he5.getDate().split("-");
@@ -79,9 +98,15 @@ public class MapController {
         String name = new SimpleDateFormat("yyMMddHHmmssSS").format(new Date());
         String params = dateParams + he5.getType() + " " + name + " " + he5.getStartX() + " " + he5.getEndX() + " " + he5.getStartY() + " " + he5.getEndY() + " C:\\";
 
-        Runtime.getRuntime().exec("C:\\mat\\crop\\distrib\\testing.exe " + params).waitFor();
 
-        log.info("created he5 : " + name + "_" + dates[0] + dates[1] + dates[2] + dates[3] + he5.getType() + ".he5");
+        // he5일때
+        if (he5.getOutputType().equals("he5")) {
+            Runtime.getRuntime().exec("C:\\mat\\crop\\distrib\\testing.exe " + params).waitFor();
+        } else {
+            log.info("NetCDF convert!");
+        }
+
+        log.info("created he5 : " + name + "_" + dates[0] + dates[1] + dates[2] + dates[3] + he5.getType() + "." + (he5.getOutputType().equals("he5") ? "he5" : "nc"));
         log.info("param : " + params);
 
         return new ResponseEntity<>(objectMapper.writeValueAsString(he5), HttpStatus.OK);
