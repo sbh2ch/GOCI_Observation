@@ -77,10 +77,10 @@ public class MapController {
         String[] dates = crop.getDate().split("-");
         for (int i = 1; i < dates.length; i++) {
             if (dates[i].length() == 1)
-                dates[i] += "0" + dates[i];
-        }
+                dates[i] = "0" + dates[i];
 
-        BufferedImage originalImage = ImageIO.read(new File("C:\\ORI_IMAGE\\" + dates[0] + "\\" + dates[1] + "\\" + dates[2] + "\\" + "COMS_GOCI_L2A_GA_" + dates[0] + dates[1] + dates[2] + dates[3] + "*." + crop.getType() + ".JPG"));
+        }
+        BufferedImage originalImage = ImageIO.read(new File("C:\\ORI_IMAGE\\" + dates[0] + "\\" + dates[1] + "\\" + dates[2] + "\\" + "COMS_GOCI_L2A_GA_" + dates[0] + dates[1] + dates[2] + dates[3] + "." + crop.getType() + ".JPG"));
         BufferedImage subImage = originalImage.getSubimage(crop.getStartX(), crop.getStartY(), crop.getEndX() - crop.getStartX(), crop.getEndY() - crop.getStartY());
         File outputFile = new File("C:\\output\\testing.JPG");
         ImageIO.write(subImage, "jpg", outputFile);
@@ -108,7 +108,6 @@ public class MapController {
 
         log.info("created he5 : " + name + "_" + dates[0] + dates[1] + dates[2] + dates[3] + he5.getType() + "." + (he5.getOutputType().equals("he5") ? "he5" : "nc"));
         log.info("param : " + params);
-
         return new ResponseEntity<>(objectMapper.writeValueAsString(he5), HttpStatus.OK);
     }
 }

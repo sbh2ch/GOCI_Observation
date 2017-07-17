@@ -25,6 +25,6 @@ public class He5 {
                 ", date='" + date + '\'' +
                 ", type='" + type + '\'' +
                 ", outputType='" + outputType + '\'' +
-                '}'; 
+                '}';
     }
 }
