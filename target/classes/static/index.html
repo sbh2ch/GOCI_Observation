@@ -27,7 +27,7 @@
         <p><input type="radio" name="gociOutput" value="he5" checked>he5</p>
         <p><input type="radio" name="gociOutput" value="NetCDF">NetCDF</p>
         <p><input type="checkbox">KML</p>
-        <button>make</button>
+        <input id="createDataBtn" type="button" value="make"/>
     </div>
     <br/>
     <div>
@@ -448,10 +448,12 @@
                             console.log('wow it works well!');
                             console.dir(data);
                             document.getElementById("croppedImg").setAttribute('src', data.imgLink.href);
+                            document.getElementById("createDataBtn").removeEventListener("click").addEventListener('click', function (e) {
+                                console.log('clickkkk');
+                            });
                         },
                         error: function (e) {
-                            console.log(e);
-                            console.log('oops!');
+                            window.alert('error occurred!');
                         }
                     });
                 } else {
