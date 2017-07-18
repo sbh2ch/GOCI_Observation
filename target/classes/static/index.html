@@ -20,7 +20,8 @@
     <div>
         output type
         <div style="border: 1px solid black; width: 400px; height: 400px; background-color: black">
-            <img src="http://localhost:8080/api/image/path/2017-07-17/name/0445938.854994092913955.JPG" width="400px"
+            <img id="croppedImg" src="http://localhost:8080/api/image/path/2017-07-17/name/0445938.854994092913955.JPG"
+                 width="400px"
                  height="400px" style="align-content: center">
         </div>
         <p><input type="radio" name="gociOutput" value="he5" checked>he5</p>
@@ -429,19 +430,28 @@
                         "endX": Math.round(selectedSector._max.x * 32) + "",
                         "endY": Math.round(selectedSector._max.y * 32) + "",
                         "date": state.year + "-" + state.month + "-" + state.day + "-" + state.time, //todo date 변수 처리
-                        "type": map.getMapTypeId(), //todo type 변수 처릐
-                        "outputType": $("input[name='gociOutput']:checked").val()
+                        "type": map.getMapTypeId() //todo type 변수 처릐
+                        // "outputType": $("input[name='gociOutput']:checked").val()
                     };
 
                     //todo 다운로드 구현
                     $.ajax({
-                        url: '/api/image',
+                        url: '/api/crop',
                         method: 'POST',
                         dataType: 'json',
                         headers: {
                             'Content-Type': 'application/json'
                         },
-                        data: JSON.stringify(data)
+                        data: JSON.stringify(data),
+                        success: function (data) {
+                            console.log('wow it works well!');
+                            console.dir(data);
+                            $("#croppedImg").attr('src', data.imgLink.href);
+                        },
+                        error: function (e) {
+                            console.log(e);
+                            console.log('oops!');
+                        }
                     });
                 } else {
                     createRectangles[key].setMap(null);

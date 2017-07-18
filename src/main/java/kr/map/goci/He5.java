@@ -11,7 +11,7 @@ public class He5 {
     @Data
     @AllArgsConstructor
     public static class Response {
-        private Crop.Request downInfo;
+        private Crop.Request properties;
         private Links links;
     }
 

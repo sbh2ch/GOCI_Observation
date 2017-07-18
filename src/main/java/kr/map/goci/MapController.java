@@ -5,6 +5,7 @@ import com.sun.org.apache.xpath.internal.operations.Mod;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityLinks;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -81,8 +82,9 @@ public class MapController {
         return new ResponseEntity<>(objectMapper.writeValueAsString(arr), HttpStatus.OK);
     }
 
+    //이미지 display
     @GetMapping(value = "/api/image/path/{path}/name/{name}")
-    public ResponseEntity getImage(@PathVariable String path, @PathVariable String name) throws Exception {
+    public ResponseEntity displayImage(@PathVariable String path, @PathVariable String name) throws Exception {
         log.info("C:/OUT_IMAGE/" + path.replaceAll("-", "/") + "/" + name);
         File imgPath = new File("C:/OUT_IMAGE/" + path.replaceAll("-", "/") + "/" + name + ".JPG");
         byte[] image = Files.readAllBytes(imgPath.toPath());
@@ -93,8 +95,9 @@ public class MapController {
         return new ResponseEntity<>(image, headers, HttpStatus.OK);
     }
 
+    //이미지 만들고 HATEOAS -> image display, satellite data make link
     @PostMapping(value = "/api/crop", produces = "application/json;charset=UTF-8")
-    public ResponseEntity image(@RequestBody Crop.Request crop) throws Exception {
+    public ResponseEntity makeImage(@RequestBody Crop.Request crop) throws Exception {
         String[] dates = crop.getDate().split("-");
         for (int i = 1; i < dates.length; i++) {
             if (dates[i].length() == 1)
@@ -107,7 +110,7 @@ public class MapController {
         String path = now[0] + "/" + now[1] + "/" + now[2];
         String name = now[3] + (Math.random() * 100) + ".JPG";
         Links imgLink = new Links("download Image", "http://localhost:8080/api/image/path/" + path.replaceAll("/", "-") + "/name/" + name);
-        Links downLink = new Links("download Satellite Data", "");
+        Links downLink = new Links("download Satellite Data", "http://localhost:8080/api/image");
         File mkdir = new File("C:/OUT_IMAGE/" + path);
         if (!mkdir.exists()) {
             mkdir.mkdirs();
@@ -121,6 +124,7 @@ public class MapController {
     }
 
 
+    //satellite data 만들고 압축 HATEOAS -> satellite data download link
     @PostMapping(value = "/api/image", produces = "application/json;charset=UTF-8")
     public ResponseEntity makeCrop(@RequestBody He5.Attributes he5) throws Exception {
         String[] dates = he5.getDate().split("-");
