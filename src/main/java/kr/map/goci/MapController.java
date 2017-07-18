@@ -25,6 +25,7 @@ import java.util.Scanner;
 /**
  * Created by kiost on 2017-07-09.
  */
+@CrossOrigin(origins = "*")
 @RestController
 @Slf4j
 public class MapController {

@@ -72,7 +72,8 @@
         latArr: [new Array(6), new Array(12), new Array(25), new Array(50)],
         lonArr: [new Array(6), new Array(12), new Array(25), new Array(50)]
     };
-    var a = Array.apply(null, new Array(6)).map(Array.prototype.valueOf, new Array(6));
+
+    //var a = Array.apply(null, new Array(6)).map(Array.prototype.valueOf, new Array(6));
 
     for (var i = 0; i < 6; i++) {
         state.valueArr[0][i] = new Array(6);
@@ -446,7 +447,7 @@
                         success: function (data) {
                             console.log('wow it works well!');
                             console.dir(data);
-                            $("#croppedImg").attr('src', data.imgLink.href);
+                            document.getElementById("croppedImg").setAttribute('src', data.imgLink.href);
                         },
                         error: function (e) {
                             console.log(e);
