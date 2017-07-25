@@ -1,3 +1,3 @@
 # maps_test
 
-* just prototype page(no root)
+* just prototype page (no root)
