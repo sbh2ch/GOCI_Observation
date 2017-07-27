@@ -43,10 +43,12 @@
         time
         <button id="timeAdd">+</button>
         <button id="timeMin">-</button>
-        <p id="year"></p>
-        <p id="month"></p>
-        <p id="date"></p>
-        <p id="time"></p>
+        <p>
+            <a id="year"></a>
+            <a id="month"></a>
+            <a id="date"></a>
+            <a id="time"></a>
+        </p>
     </div>
 </div>
 
@@ -96,7 +98,8 @@
         state.lonArr[3][i] = new Array(50);
     }
 
-    var cleanArr = function () {
+    var cleanAll = function () {
+        console.log('clear All array')
         for (var i = 0; i < 6; i++) {
             state.valueArr[0][i] = new Array(6);
         }
@@ -111,7 +114,7 @@
         }
     };
 
-    cleanArr();
+    cleanAll();
 
     var tileSize = new naver.maps.Size(200, 200),
         proj = {
@@ -168,6 +171,10 @@
         },
         disableDoubleClickZoom: true,
         disableDoubleTapZoom: true
+    });
+
+    naver.maps.Event.addListener(map, 'mapTypeId_changed', function() {
+        cleanAll();
     });
 
     var drawingManager = new naver.maps.drawing.DrawingManager({
@@ -279,9 +286,8 @@
                     }
                 });
             }
-
+            console.log('/api/' + state.year + '-' + state.month + '-' + state.day + '-' + state.time + '/' + arrX + '-' + arrY + '/' + zoom + '/' + map.getMapTypeId());
             $.ajax({
-                //todo 날짜 처리
                 url: '/api/' + state.year + '-' + state.month + '-' + state.day + '-' + state.time + '/' + arrX + '-' + arrY + '/' + zoom + '/' + map.getMapTypeId(),
                 method: 'GET',
                 dataType: 'JSON',
@@ -314,7 +320,6 @@
 
         //todo 노가다 코드 없에기
         $("#yearAdd").click(function () {
-            cleanArr();
             setState(state.year, state.month, state.day, state.time);
             state.year = state.year + 1;
             $("#year").html(state.year + "년");
@@ -327,7 +332,6 @@
         });
 
         $("#yearMin").click(function () {
-            cleanArr();
             setState(state.year, state.month, state.day, state.time);
             state.year = state.year - 1;
             $("#year").html(state.year + "년");
@@ -340,7 +344,6 @@
         });
 
         $("#monthAdd").click(function () {
-            cleanArr();
             setState(state.year, state.month, state.day, state.time);
             state.month = state.month + 1;
             $("#month").html(state.month + "월");
@@ -353,7 +356,6 @@
         });
 
         $("#monthMin").click(function () {
-            cleanArr();
             setState(state.year, state.month, state.day, state.time);
             state.month = state.month - 1;
             $("#month").html(state.month + "월");
@@ -366,7 +368,6 @@
         });
 
         $("#add").click(function () {
-            cleanArr();
             setState(state.year, state.month, state.day, state.time);
             state.day = state.day + 1;
             $("#date").html(state.day + "일");
@@ -379,7 +380,6 @@
         });
 
         $("#min").click(function () {
-            cleanArr();
             setState(state.year, state.month, state.day, state.time);
             state.day = state.day - 1;
             $("#date").html(state.day + "일");
@@ -392,7 +392,6 @@
         });
 
         $("#timeAdd").click(function () {
-            cleanArr();
             setState(state.year, state.month, state.day, state.time);
             state.time = state.time + 1;
             $("#time").html(state.time + "시");
@@ -405,7 +404,6 @@
         });
 
         $("#timeMin").click(function () {
-            cleanArr();
             setState(state.year, state.month, state.day, state.time);
             state.time = state.time - 1;
             $("#time").html(state.time + "시");
@@ -445,10 +443,9 @@
                         },
                         data: JSON.stringify(data),
                         success: function (data) {
-                            console.log('wow it works well!');
-                            console.dir(data);
                             document.getElementById("croppedImg").setAttribute('src', data.imgLink.href);
-                            document.getElementById("createDataBtn").removeEventListener("click").addEventListener('click', function (e) {
+
+                            document.getElementById("createDataBtn").addEventListener('click', function (e) {
                                 console.log('clickkkk');
                             });
                         },
