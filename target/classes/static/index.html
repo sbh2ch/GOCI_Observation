@@ -173,7 +173,7 @@
         disableDoubleTapZoom: true
     });
 
-    naver.maps.Event.addListener(map, 'mapTypeId_changed', function() {
+    naver.maps.Event.addListener(map, 'mapTypeId_changed', function () {
         cleanAll();
     });
 
@@ -435,7 +435,7 @@
 
                     //todo 다운로드 구현
                     $.ajax({
-                        url: '/api/crop',
+                        url: '/api/image',
                         method: 'POST',
                         dataType: 'json',
                         headers: {
@@ -444,7 +444,7 @@
                         data: JSON.stringify(data),
                         success: function (data) {
                             document.getElementById("croppedImg").setAttribute('src', data.imgLink.href);
-
+                            console.dir(data);
                             document.getElementById("createDataBtn").addEventListener('click', function (e) {
                                 console.log('clickkkk');
                             });

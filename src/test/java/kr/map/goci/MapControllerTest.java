@@ -54,7 +54,7 @@ public class MapControllerTest {
     }
 
     @Test
-    public void makeImage() throws Exception {
+    public void makeHateoas() throws Exception {
         Crop.Request crop = new Crop.Request();
         crop.setDate("2017-7-9-0");
         crop.setStartX(1028);
@@ -62,7 +62,25 @@ public class MapControllerTest {
         crop.setEndX(2132);
         crop.setEndY(2512);
         crop.setType("CDOM");
-        ResultActions result = mockMvc.perform(post("/api/crop").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(crop)));
+        ResultActions result = mockMvc.perform(post("/api/image").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(crop)));
+
+        result.andDo(print());
+        result.andExpect(status().isOk());
+    }
+
+    @Test
+    public void makeCroppedHe5AndHateoas() throws Exception {
+        He5.Attributes data = new He5.Attributes("2868", "1804", "4076", "2996", "2017-7-9-0", "CDOM", "he5");
+        ResultActions result = mockMvc.perform(post("/api/satelliteData").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(data)));
+
+        result.andDo(print());
+        result.andExpect(status().isOk());
+    }
+
+    @Test
+    public void makeCroppedNetCDFAndHateoas() throws Exception {
+        He5.Attributes data = new He5.Attributes("2868", "1804", "4076", "2996", "2017-7-9-0", "CDOM", "netCDF");
+        ResultActions result = mockMvc.perform(post("/api/satelliteData").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(data)));
 
         result.andDo(print());
         result.andExpect(status().isOk());

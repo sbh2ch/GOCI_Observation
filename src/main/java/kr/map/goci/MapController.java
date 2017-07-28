@@ -99,7 +99,7 @@ public class MapController {
     }
 
     //이미지 만들고 HATEOAS -> image display, satellite data make link
-    @PostMapping(value = "/api/crop", produces = "application/json;charset=UTF-8")
+    @PostMapping(value = "/api/image", produces = "application/json;charset=UTF-8")
     public ResponseEntity makeImage(@RequestBody Crop.Request crop) throws Exception {
         String[] dates = crop.getDate().split("-");
         for (int i = 1; i < dates.length; i++) {
@@ -113,7 +113,7 @@ public class MapController {
         String path = now[0] + "/" + now[1] + "/" + now[2];
         String name = now[3] + (Math.random() * 100) + ".JPG";
         Links imgLink = new Links("download Image", SERVER_NAME + "/api/image/path/" + path.replaceAll("/", "-") + "/name/" + name);
-        Links downLink = new Links("download Satellite Data", SERVER_NAME + "/api/image");
+        Links downLink = new Links("make Satellite Data", SERVER_NAME + "/api/satelliteData");
         File mkdir = new File("C:/OUT_IMAGE/" + path);
         if (!mkdir.exists()) {
             mkdir.mkdirs();
@@ -127,8 +127,8 @@ public class MapController {
     }
 
 
-    //satellite data 만들고 압축 HATEOAS -> satellite data download link
-    @PostMapping(value = "/api/image", produces = "application/json;charset=UTF-8")
+    //satellite data 만들고 다운로드 HATEOAS -> satellite data download link
+    @PostMapping(value = "/api/satelliteData", produces = "application/json;charset=UTF-8")
     public ResponseEntity makeCrop(@RequestBody He5.Attributes he5) throws Exception {
         String[] dates = he5.getDate().split("-");
         StringBuilder dateParams = new StringBuilder();
