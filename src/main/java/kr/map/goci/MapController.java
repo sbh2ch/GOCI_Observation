@@ -29,6 +29,8 @@ import java.util.Scanner;
 @RestController
 @Slf4j
 public class MapController {
+    private String SERVER_NAME = "http://localhost:9090";
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -110,8 +112,8 @@ public class MapController {
         String[] now = new SimpleDateFormat("yyyy-MM-dd-ssSSS").format(new Date()).split("-");
         String path = now[0] + "/" + now[1] + "/" + now[2];
         String name = now[3] + (Math.random() * 100) + ".JPG";
-        Links imgLink = new Links("download Image", "http://localhost:8080/api/image/path/" + path.replaceAll("/", "-") + "/name/" + name);
-        Links downLink = new Links("download Satellite Data", "http://localhost:8080/api/image");
+        Links imgLink = new Links("download Image", SERVER_NAME + "/api/image/path/" + path.replaceAll("/", "-") + "/name/" + name);
+        Links downLink = new Links("download Satellite Data", SERVER_NAME + "/api/image");
         File mkdir = new File("C:/OUT_IMAGE/" + path);
         if (!mkdir.exists()) {
             mkdir.mkdirs();

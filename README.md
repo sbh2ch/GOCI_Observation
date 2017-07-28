@@ -28,5 +28,5 @@
 * build Image Server
 * ~~accept const's idiotful idea~~
 * handle loading event
-* additional RESTful API
-* apply Long, Lat position
+* additional REST API
+* ~~apply Lon, Lat position~~
