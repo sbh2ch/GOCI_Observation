@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4815e6f3-7876-4a24-8954-09edb23415f5" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/kr/map/goci/MapController.java" afterPath="$PROJECT_DIR$/src/main/java/kr/map/goci/MapController.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/kr/map/goci/MapControllerTest.java" afterPath="$PROJECT_DIR$/src/test/java/kr/map/goci/MapControllerTest.java" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -24,8 +24,8 @@
           <file leaf-file-name="MapControllerTest.java" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/test/java/kr/map/goci/MapControllerTest.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="743">
-                  <caret line="71" column="5" lean-forward="false" selection-start-line="71" selection-start-column="5" selection-end-line="71" selection-end-column="5" />
+                <state relative-caret-position="806">
+                  <caret line="72" column="0" lean-forward="true" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
                   <folding>
                     <element signature="imports" expanded="true" />
                     <element signature="e#1317#1318#0" expanded="true" />
@@ -752,14 +752,11 @@
       <workItem from="1501051765693" duration="5900000" />
       <workItem from="1501122340722" duration="5522000" />
       <workItem from="1501150194607" duration="3472000" />
-      <workItem from="1501164521066" duration="17285000" />
+      <workItem from="1501164521066" duration="17823000" />
     </task>
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Unnamed - 2017.07.28 at 15h 36m 38s.xml">
-      <configuration name="Unnamed" configurationId="JUnit" />
-    </history-entry>
     <history-entry file="Unnamed - 2017.07.28 at 15h 37m 21s.xml">
       <configuration name="Unnamed" configurationId="JUnit" />
     </history-entry>
@@ -781,9 +778,18 @@
     <history-entry file="Unnamed - 2017.07.28 at 17h 52m 23s.xml">
       <configuration name="Unnamed" configurationId="JUnit" />
     </history-entry>
+    <history-entry file="Unnamed - 2017.07.28 at 18h 53m 05s.xml">
+      <configuration name="Unnamed" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="Unnamed - 2017.07.28 at 18h 54m 18s.xml">
+      <configuration name="Unnamed" configurationId="JUnit" />
+    </history-entry>
+    <history-entry file="Unnamed - 2017.07.28 at 18h 55m 03s.xml">
+      <configuration name="Unnamed" configurationId="JUnit" />
+    </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="123628000" />
+    <option name="totallyTimeSpent" value="124166000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1251,8 +1257,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/kr/map/goci/MapControllerTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="743">
-          <caret line="71" column="5" lean-forward="false" selection-start-line="71" selection-start-column="5" selection-end-line="71" selection-end-column="5" />
+        <state relative-caret-position="806">
+          <caret line="72" column="0" lean-forward="true" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1317#1318#0" expanded="true" />
