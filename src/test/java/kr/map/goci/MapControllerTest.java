@@ -68,14 +68,14 @@ public class MapControllerTest {
         result.andExpect(status().isOk());
     }
 
-    @Test
-    public void makeCroppedHe5AndHateoas() throws Exception {
-        He5.Attributes data = new He5.Attributes("2868", "1804", "4076", "2996", "2017-7-9-0", "CDOM", "he5");
-        ResultActions result = mockMvc.perform(post("/api/satelliteData").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(data)));
-
-        result.andDo(print());
-        result.andExpect(status().isOk());
-    }
+//    @Test
+//    public void makeCroppedHe5AndHateoas() throws Exception {
+//        He5.Attributes data = new He5.Attributes("2868", "1804", "4076", "2996", "2017-7-9-0", "CDOM", "he5");
+//        ResultActions result = mockMvc.perform(post("/api/satelliteData").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(data)));
+//
+//        result.andDo(print());
+//        result.andExpect(status().isOk());
+//    }
 
     @Test
     public void makeCroppedNetCDFAndHateoas() throws Exception {

@@ -119,6 +119,7 @@ public class MapController {
             mkdir.mkdirs();
         }
 
+
         File outputFile = new File("C:/OUT_IMAGE/" + path + "/" + name);
         ImageIO.write(subImage, "jpg", outputFile);
         Crop.Response res = new Crop.Response(path, name, imgLink, new He5.Response(crop, downLink));
@@ -136,7 +137,6 @@ public class MapController {
 
         String name = new SimpleDateFormat("yyMMddHHmmssSS").format(new Date());
         String params = dateParams + he5.getType() + " " + name + " " + he5.getStartX() + " " + he5.getEndX() + " " + he5.getStartY() + " " + he5.getEndY() + " C:\\";
-
         // he5일때
         if (he5.getOutputType().equals("he5")) {
             Runtime.getRuntime().exec("C:\\mat\\crop\\distrib\\testing.exe " + params).waitFor();
