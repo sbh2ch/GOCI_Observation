@@ -7,24 +7,15 @@
 <body>
 <script>
     console.log('hello');
-    var func = function (lat, lng) {
-        var MAP_HEIGHT = 5685;
-        var MAP_WIDTH = 5567;
-        var y = Math.round(((-1 * lat) + 90) * (MAP_HEIGHT / 180));
-        var x = Math.round((lng + 180) * (MAP_WIDTH / 360));
-
-        console.log('x : ' + x);
-        console.log('y : ' + y);
+    var func = function (y) {
+        var a = -0.00453528780739211717100633356791;
+        var lat = a*y + 48.22499084472656;
+        console.log(lat);
     };
 
-    console.log('1,1');
-    func(46.9902, 111.3244);
-    console.log('5685,1');
-    func(21.5436, 116.4185);
-    console.log('5685,5567');
-    func(21.543634414672850, 143.5814666748047);
-    console.log('1,1');
-    func(46.990150451660156, 148.6755676269531);
+    func(1);
+    func(3000);
+    func(5684);
 
 </script>
 </body>
