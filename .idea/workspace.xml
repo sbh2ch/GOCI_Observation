@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4815e6f3-7876-4a24-8954-09edb23415f5" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/test/java/kr/map/goci/MapControllerTest.java" afterPath="$PROJECT_DIR$/src/test/java/kr/map/goci/MapControllerTest.java" />
-    </list>
+    <list default="true" id="4815e6f3-7876-4a24-8954-09edb23415f5" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -24,8 +21,8 @@
           <file leaf-file-name="MapControllerTest.java" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/src/test/java/kr/map/goci/MapControllerTest.java">
               <provider selected="true" editor-type-id="text-editor">
-                <state relative-caret-position="806">
-                  <caret line="72" column="0" lean-forward="true" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
+                <state relative-caret-position="1016">
+                  <caret line="82" column="30" lean-forward="false" selection-start-line="82" selection-start-column="30" selection-end-line="82" selection-end-column="30" />
                   <folding>
                     <element signature="imports" expanded="true" />
                     <element signature="e#1317#1318#0" expanded="true" />
@@ -145,8 +142,8 @@
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
   <component name="ProjectFrameBounds">
-    <option name="x" value="-2776" />
-    <option name="y" value="257" />
+    <option name="x" value="460" />
+    <option name="y" value="161" />
     <option name="width" value="3281" />
     <option name="height" value="1856" />
   </component>
@@ -752,7 +749,7 @@
       <workItem from="1501051765693" duration="5900000" />
       <workItem from="1501122340722" duration="5522000" />
       <workItem from="1501150194607" duration="3472000" />
-      <workItem from="1501164521066" duration="17823000" />
+      <workItem from="1501164521066" duration="18503000" />
     </task>
     <servers />
   </component>
@@ -789,7 +786,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="124166000" />
+    <option name="totallyTimeSpent" value="124846000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -801,7 +798,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-2776" y="257" width="3281" height="1856" extended-state="0" />
+    <frame x="460" y="161" width="3281" height="1856" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32994407" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -1257,8 +1254,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/kr/map/goci/MapControllerTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="806">
-          <caret line="72" column="0" lean-forward="true" selection-start-line="72" selection-start-column="0" selection-end-line="72" selection-end-column="0" />
+        <state relative-caret-position="1016">
+          <caret line="82" column="30" lean-forward="false" selection-start-line="82" selection-start-column="30" selection-end-line="82" selection-end-column="30" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#1317#1318#0" expanded="true" />
