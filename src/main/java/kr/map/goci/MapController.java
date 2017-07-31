@@ -10,9 +10,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,8 +29,9 @@ import java.util.Date;
 @CrossOrigin(origins = "*")
 @RestController
 @Slf4j
+@Transactional
 public class MapController {
-    private String SERVER_NAME = "http://localhost:9090";
+
 
     @Autowired
     private MapService mapService;
@@ -95,33 +98,25 @@ public class MapController {
 
     //이미지 만들고 HATEOAS -> image display, satellite data make link
     @PostMapping(value = "/api/image", produces = "application/json;charset=UTF-8")
-    public ResponseEntity makeImage(@RequestBody Crop.Request crop) throws Exception {
-        String[] dates = crop.getDate().split("-");
-        for (int i = 1; i < dates.length; i++) {
-            if (dates[i].length() == 1)
-                dates[i] = "0" + dates[i];
+    public ResponseEntity makeImage(@RequestBody Crop.Request crop) {
+
+        Crop.Response res = null;
+        try {
+            res = mapService.makeImage(crop);
+        } catch (IOException e) {
+            log.error(e.toString());
+            return new ResponseEntity<>(new ErrorResponse("잘못된 요청입니다.", "bad.request"), HttpStatus.BAD_REQUEST);
         }
 
-        BufferedImage originalImage = ImageIO.read(new File("C:\\ORI_IMAGE\\" + dates[0] + "\\" + dates[1] + "\\" + dates[2] + "\\" + "COMS_GOCI_L2A_GA_" + dates[0] + dates[1] + dates[2] + dates[3] + "." + crop.getType() + ".JPG"));
-        BufferedImage subImage = originalImage.getSubimage(crop.getStartX(), crop.getStartY(), crop.getEndX() - crop.getStartX(), crop.getEndY() - crop.getStartY());
-        String[] now = new SimpleDateFormat("yyyy-MM-dd-ssSSS").format(new Date()).split("-");
-        String path = now[0] + "/" + now[1] + "/" + now[2];
-        String name = now[3] + "_" + (Math.random() * 100) + ".JPG";
-        Links imgLink = new Links("download Image", SERVER_NAME + "/api/image/path/" + path.replaceAll("/", "-") + "/name/" + name, "GET");
-        Links downLink = new Links("make Satellite Data", SERVER_NAME + "/api/satelliteData", "POST");
-
-        File mkdir = new File("C:/OUT_IMAGE/" + path);
-
-        if (!mkdir.exists()) {
-            mkdir.mkdirs();
+        String result = null;
+        try {
+            result = objectMapper.writeValueAsString(res);
+        } catch (JsonProcessingException e) {
+            log.error(e.toString());
+            return new ResponseEntity<>(new ErrorResponse("파싱 실패", "failed.parsing"), HttpStatus.BAD_REQUEST);
         }
 
-
-        File outputFile = new File("C:/OUT_IMAGE/" + path + "/" + name);
-        ImageIO.write(subImage, "jpg", outputFile);
-        Crop.Response res = new Crop.Response(path, name, imgLink, new He5.Response(crop, downLink));
-
-        return new ResponseEntity<>(objectMapper.writeValueAsString(res), HttpStatus.OK);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 
@@ -143,7 +138,19 @@ public class MapController {
         }
 
         log.info("created he5 : " + name + "_" + dates[0] + dates[1] + dates[2] + dates[3] + he5.getType() + "." + (he5.getOutputType().equals("he5") ? "he5" : "nc"));
-        log.info("param : " + params);
         return new ResponseEntity<>(objectMapper.writeValueAsString(he5), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/api/satelliteData/path/{path}/name/{name}")
+    public ResponseEntity getCrop(@PathVariable String path, @PathVariable String name) throws Exception {
+
+
+        return null;
+    }
+
+    @PostMapping(value = "/api/insertTest")
+    public ResponseEntity insertLog(HttpServletRequest request) throws Exception {
+        DownLog downLog = mapService.insertDownLog(request.getRemoteAddr(), "test");
+        return new ResponseEntity<>(objectMapper.writeValueAsString(downLog), HttpStatus.OK);
     }
 }
