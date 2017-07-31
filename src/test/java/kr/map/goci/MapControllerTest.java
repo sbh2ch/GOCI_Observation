@@ -52,6 +52,42 @@ public class MapControllerTest {
     }
 
     @Test
+    public void getValue_FileNotFoundException() throws Exception {
+        ResultActions result = mockMvc.perform(get("/api/2222-7-9-0/3-2/3/CHL"));
+
+        result.andDo(print());
+        result.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void getLatLon_FileNotFoundException() throws Exception {
+        ResultActions result = mockMvc.perform(get("/api/lonlat/77-77/1"));
+
+        result.andDo(print());
+        result.andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void imageDisplay() throws Exception {
+        String path = "2017-07-31";
+        String name = "03518_79.15291747222965.JPG";
+        ResultActions result = mockMvc.perform(get("/api/image/path/" + path + "/name/" + name));
+
+        result.andDo(print());
+        result.andExpect(status().isOk());
+    }
+
+    @Test
+    public void imageDisplay_IOException() throws Exception {
+        String path = "wrongPath";
+        String name = "wrongImageName.JPG";
+        ResultActions result = mockMvc.perform(get("/api/image/path/" + path + "/name/" + name));
+
+        result.andDo(print());
+        result.andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void makeHateoas() throws Exception {
         Crop.Request crop = new Crop.Request();
         crop.setDate("2017-7-9-0");
