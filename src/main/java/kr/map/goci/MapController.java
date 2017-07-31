@@ -111,10 +111,12 @@ public class MapController {
         BufferedImage subImage = originalImage.getSubimage(crop.getStartX(), crop.getStartY(), crop.getEndX() - crop.getStartX(), crop.getEndY() - crop.getStartY());
         String[] now = new SimpleDateFormat("yyyy-MM-dd-ssSSS").format(new Date()).split("-");
         String path = now[0] + "/" + now[1] + "/" + now[2];
-        String name = now[3] + (Math.random() * 100) + ".JPG";
-        Links imgLink = new Links("download Image", SERVER_NAME + "/api/image/path/" + path.replaceAll("/", "-") + "/name/" + name);
-        Links downLink = new Links("make Satellite Data", SERVER_NAME + "/api/satelliteData");
+        String name = now[3] + "_" + (Math.random() * 100) + ".JPG";
+        Links imgLink = new Links("download Image", SERVER_NAME + "/api/image/path/" + path.replaceAll("/", "-") + "/name/" + name, "GET");
+        Links downLink = new Links("make Satellite Data", SERVER_NAME + "/api/satelliteData", "POST");
+
         File mkdir = new File("C:/OUT_IMAGE/" + path);
+
         if (!mkdir.exists()) {
             mkdir.mkdirs();
         }

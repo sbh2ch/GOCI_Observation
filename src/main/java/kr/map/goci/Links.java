@@ -11,4 +11,5 @@ import lombok.Data;
 public class Links {
     String rel;
     String href;
+    String httpMethodType;
 }
