@@ -2,12 +2,14 @@ package kr.map.goci;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * Created by kiost on 2017-07-14.
  */
 public class Crop {
     @Data
+    @ToString
     public static class Request {
         private int startX;
         private int startY;
@@ -15,18 +17,6 @@ public class Crop {
         private int endY;
         private String date;
         private String type;
-
-        @Override
-        public String toString() {
-            return "Crop{" +
-                    "startX='" + startX + '\'' +
-                    ", startY='" + startY + '\'' +
-                    ", endX='" + endX + '\'' +
-                    ", endY='" + endY + '\'' +
-                    ", date='" + date + '\'' +
-                    ", type='" + type + '\'' +
-                    '}';
-        }
     }
 
     @Data
@@ -40,16 +30,9 @@ public class Crop {
     }
 
     @Data
+    @ToString
     public static class Show {
         private String path;
         private String name;
-
-        @Override
-        public String toString() {
-            return "Show{" +
-                    "path='" + path + '\'' +
-                    ", name='" + name + '\'' +
-                    '}';
-        }
     }
 }

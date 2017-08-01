@@ -121,11 +121,30 @@ public class MapControllerTest {
         result.andExpect(status().isOk());
     }
 
+
     @Test
-    public void insertDownLog() throws Exception {
-        ResultActions result = mockMvc.perform(post("/api/insertTest"));
+    public void download() throws Exception {
+        String path = "2017-7-31";
+        String name = "170731113617299_2017070900";
+        String outputType = "CDOM";
+        String fileType = "he5";
+        String url = "/api/satelliteData/path/" + path + "/name/" + name + "/outputType/" + outputType + "/fileType/" + fileType;
+        ResultActions result = mockMvc.perform(get(url));
 
         result.andDo(print());
         result.andExpect(status().isOk());
+    }
+
+    @Test
+    public void download_bad_request() throws Exception {
+        String path = "2017-1-31";
+        String name = "17073117299_2017070900";
+        String outputType = "CDM";
+        String fileType = "nc";
+        String url = "/api/satelliteData/path/" + path + "/name/" + name + "/outputType/" + outputType + "/fileType/" + fileType;
+        ResultActions result = mockMvc.perform(get(url));
+
+        result.andDo(print());
+        result.andExpect(status().isBadRequest());
     }
 }

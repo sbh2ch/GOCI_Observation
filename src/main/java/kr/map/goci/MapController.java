@@ -6,6 +6,7 @@ import kr.map.commons.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -13,15 +14,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
-import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
 
 /**
  * Created by kiost on 2017-07-09.
@@ -31,7 +28,8 @@ import java.util.Date;
 @Slf4j
 @Transactional
 public class MapController {
-
+    @Autowired
+    private LogService logService;
 
     @Autowired
     private MapService mapService;
@@ -122,35 +120,49 @@ public class MapController {
 
     //satellite data 만들고 다운로드 HATEOAS -> satellite data download link
     @PostMapping(value = "/api/satelliteData", produces = "application/json;charset=UTF-8")
-    public ResponseEntity makeCrop(@RequestBody He5.Attributes he5) throws Exception {
-        String[] dates = he5.getDate().split("-");
-        StringBuilder dateParams = new StringBuilder();
-        Arrays.stream(dates).forEach(date -> dateParams.append((date.length() == 1 ? "0" + date : date) + " "));
-
-        String name = new SimpleDateFormat("yyMMddHHmmssSS").format(new Date());
-        String params = dateParams + he5.getType() + " " + name + " " + he5.getStartX() + " " + he5.getEndX() + " " + he5.getStartY() + " " + he5.getEndY() + " C:\\";
-        // he5일때
-        if (he5.getOutputType().equals("he5")) {
-            Runtime.getRuntime().exec("C:\\mat\\crop\\distrib\\testing.exe " + params).waitFor();
-        } else {
-            //todo NetCDF convert Code
-            log.info("NetCDF convert!");
+    public ResponseEntity makeCrop(@RequestBody He5.Attributes he5) throws InterruptedException {
+        try {
+            mapService.makeCroppedData(he5);
+        } catch (IOException e) {
+            log.error(e.toString());
+            return new ResponseEntity<>(new ErrorResponse("IO 에러", "bad.request"), HttpStatus.BAD_REQUEST);
         }
 
-        log.info("created he5 : " + name + "_" + dates[0] + dates[1] + dates[2] + dates[3] + he5.getType() + "." + (he5.getOutputType().equals("he5") ? "he5" : "nc"));
-        return new ResponseEntity<>(objectMapper.writeValueAsString(he5), HttpStatus.OK);
+        String result = null;
+        try {
+            result = objectMapper.writeValueAsString(he5);
+        } catch (JsonProcessingException e) {
+            log.error(e.toString());
+            return new ResponseEntity<>(new ErrorResponse("파싱 실패", "failed.parsing"), HttpStatus.BAD_REQUEST);
+        }
+
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/api/satelliteData/path/{path}/name/{name}")
-    public ResponseEntity getCrop(@PathVariable String path, @PathVariable String name) throws Exception {
+    //satellite data 다운로드 파일 이름, 생성 날짜 xxxx-x-x , 산출물 종류(CDOM, TSS), 파일 종류(nc, he5)
+    @GetMapping(value = "/api/satelliteData/path/{path}/name/{name}/outputType/{outputType}/fileType/{fileType}")
+    public ResponseEntity getCroppedData(@PathVariable String path, @PathVariable String name, @PathVariable String outputType, @PathVariable String fileType, HttpServletRequest request) {
+        File file = mapService.downloadFile(path, name, outputType, fileType);
+        DownLog downInfo = logService.insertDownLog(request.getRemoteAddr(), name, outputType, fileType);
+        log.info("download log is {}", downInfo.toString());
 
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("application/x-msdownload"));
+        headers.setContentLength(file.length());
+        headers.setContentDispositionFormData("attachment", file.getName());
 
-        return null;
+        try {
+            return new ResponseEntity<>(new InputStreamResource(new FileInputStream(file)), headers, HttpStatus.OK);
+        } catch (FileNotFoundException e) {
+            log.error(e.toString());
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
-    @PostMapping(value = "/api/insertTest")
-    public ResponseEntity insertLog(HttpServletRequest request) throws Exception {
-        DownLog downLog = mapService.insertDownLog(request.getRemoteAddr(), "test");
-        return new ResponseEntity<>(objectMapper.writeValueAsString(downLog), HttpStatus.OK);
+    @ExceptionHandler(NoSuchFileException.class)
+    public ResponseEntity handleNoSuchFileException(NoSuchFileException e) {
+
+        return new ResponseEntity<>(new ErrorResponse("해당 파일이 없습니다.", "no.such.file.exception"), HttpStatus.BAD_REQUEST);
     }
 }

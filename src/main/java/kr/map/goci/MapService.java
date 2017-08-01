@@ -1,7 +1,6 @@
 package kr.map.goci;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -11,16 +10,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Scanner;
 
 @Service
 @Slf4j
 public class MapService {
-    @Autowired
-    private DownLogRepository downLogRepository;
-
     private String SERVER_NAME = "http://localhost:9090";
+    private String OUTPUT_FILE_PATH = "C:/output/goci/";
 
     public String[][] getValue(String date, String pos, String zoom, String type) throws FileNotFoundException {
         String[] dateInfo = date.split("-");
@@ -104,13 +102,33 @@ public class MapService {
         return new Crop.Response(path, name, imgLink, new He5.Response(crop, downLink));
     }
 
+    public void makeCroppedData(He5.Attributes he5) throws IOException, InterruptedException {
+        String[] dates = he5.getDate().split("-");
+        StringBuilder dateParams = new StringBuilder();
+        Arrays.stream(dates).forEach(date -> dateParams.append((date.length() == 1 ? "0" + date : date) + " "));
 
-    public DownLog insertDownLog(String ip, String fileName) {
-        DownLog downLog = new DownLog();
-        downLog.setDate(new Date());
-        downLog.setFilename(fileName);
-        downLog.setIp(ip);
+        String name = new SimpleDateFormat("yyMMddHHmmssSS").format(new Date());
+        String params = dateParams + he5.getType() + " " + name + " " + he5.getStartX() + " " + he5.getEndX() + " " + he5.getStartY() + " " + he5.getEndY() + " C:\\";
+        // he5일때
+        if (he5.getOutputType().equals("he5")) {
+            Runtime.getRuntime().exec("C:\\mat\\crop\\distrib\\testing.exe " + params).waitFor();
+        } else {
+            //todo NetCDF convert Code
+            log.info("NetCDF convert!");
+        }
 
-        return downLogRepository.save(downLog);
+        log.info("created he5 : " + name + "_" + dates[0] + dates[1] + dates[2] + dates[3] + he5.getType() + "." + (he5.getOutputType().equals("he5") ? "he5" : "nc"));
+    }
+
+    public File downloadFile(String path, String name, String outputType, String fileType) {
+        String filePath = OUTPUT_FILE_PATH + path.replaceAll("-", "/") + "/" + name + "." + outputType + "." + fileType;
+        log.info(filePath);
+        File downFile = new File(filePath);
+
+        if (!downFile.exists()) {
+            throw new NoSuchFileException(filePath);
+        }
+
+        return downFile;
     }
 }
