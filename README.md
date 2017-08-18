@@ -1,6 +1,6 @@
 # maps_test
 
-* just prototype page (no root)
+* testing page
 
 ### todo
 * ~~apply Naver Maps API~~
